@@ -51,6 +51,7 @@ class PracticeController extends Controller
                 }
             }
             # Load the view and pass it the array of methods
+            dump($methods);
             return view('practice')->with(['methods' => $methods]);
         } # Otherwise, load the requested method
         else {
