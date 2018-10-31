@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
-    //
-    public function index()
+    public function __invoke()
     {
-        return "Welcome";
+        return view('welcome');
     }
 }
