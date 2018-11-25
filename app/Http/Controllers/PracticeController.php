@@ -2,8 +2,113 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use IanLChapman\PigLatinTranslator\Parser;
+use App\Book;
+
 class PracticeController extends Controller
 {
+    public function practice11()
+    {
+        $results = Book::where('author', '=', 'J.K. Rowling')->delete();
+        dump($results);
+    }
+
+
+    public function practice10()
+    {
+        $results = Book::where('author', '=', 'JK Rowling')->update(['author' => 'J.K. Rowling']);
+        dump($results);
+
+    }
+
+
+    public function practice9()
+    {
+        $results = Book::orderBy('published_year', 'desc')->get();
+
+        if ($results->isEmpty()) {
+            dump('No matches found');
+        } else {
+            foreach ($results as $book) {
+                dump($book->title, $book->published_year);
+            }
+        }
+    }
+
+    public function practice8()
+    {
+        $results = Book::orderBy('title')->get();
+
+        if ($results->isEmpty()) {
+            dump('No matches found');
+        } else {
+            foreach ($results as $book) {
+                dump($book->title);
+            }
+        }
+    }
+
+
+    public function practice7()
+    {
+        $results = Book::where('published_year', '>', '1950')->get();
+
+        if ($results->isEmpty()) {
+            dump('No matches found');
+        } else {
+            foreach ($results as $book) {
+                dump($book->title);
+            }
+        }
+    }
+
+    public function practice6()
+    {
+        $results = Book::orderBy('created_at', 'desc')->limit(2)->get();
+
+        if ($results->isEmpty()) {
+            dump('No matches found');
+        } else {
+            foreach ($results as $book) {
+                dump($book->title);
+            }
+        }
+    }
+
+
+    public function practice5()
+    {
+        $book = new Book();
+        $books = $book->where('title', 'LIKE', '%Harry Potter%')->get();
+
+        if ($books->isEmpty()) {
+            dump('No matches found');
+        } else {
+            foreach ($books as $book) {
+                dump($book->title);
+            }
+        }
+    }
+
+    public function practice4()
+    {
+        # Instantiate a new Book Model object
+        $book = new Book();
+
+        # Set the properties
+        # Note how each property corresponds to a field in the table
+        $book->title = 'Harry Potter and the Sorcerer\'s Stone';
+        $book->author = 'J.K. Rowling';
+        $book->published_year = 1997;
+        $book->cover_url = 'http://prodimage.images-bn.com/pimages/9780590353427_p0_v1_s484x700.jpg';
+        $book->purchase_url = 'http://www.barnesandnoble.com/w/harry-potter-and-the-sorcerers-stone-j-k-rowling/1100036321?ean=9780590353427';
+
+        # Invoke the Eloquent `save` method to generate a new row in the
+        # `books` table, with the above data
+        $book->save();
+
+        dump('Added: '.$book->title);
+    }
+
     /**
      * Demonstrating using an external package
      */
