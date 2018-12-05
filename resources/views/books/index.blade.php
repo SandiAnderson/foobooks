@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ $title }}
+    Book Results
 @endsection
 
 @push('head')
@@ -10,15 +10,9 @@
 @endpush
 
 @section('content')
-    <h1>{{ $title }}</h1>
+    <h1>Book Results</h1>
 
-    <p>
     @foreach ($books as $book)
-        <div class='book'>
-            <h3>{{ $title }}</h3>
-            <h4>by {{ $book['author'] }}</h4>
-            <img src='{{ $book['cover_url'] }}' alt='Cover image for the book {{ $title }}'>
-        </div>
-        @endforeach
-        </p>
+            @include('books._books')
+    @endforeach
 @endsection

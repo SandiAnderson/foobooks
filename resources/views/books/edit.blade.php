@@ -5,35 +5,37 @@
 @endsection
 
 @section('content')
-    <h1>Add a book</h1>
+    <h1>Edit {{$book->title}}</h1>
 
-    <form method='POST' action='/books'>
+    <form method='POST' action='/books/{{ $book->id }}'>
         <div class='details'>* Required fields</div>
+        {{ method_field('put') }}
         {{ csrf_field() }}
 
         <label for='title'>* Title</label>
-        <input type='text' name='title' id='title' value='{{old('title', 'Fire and Blood')}}'>
+        <input type='text' name='title' id='title' value='{{$book->title}}'>
         @include('modules.field-error',['field'=>'title'])
 
         <label for='author_id'>* Author</label>
-        <input type='text' name='author' id='author' value='{{old('author','George R.R. Martin')}}'>
+        <input type='text' name='author' id='author' value='{{$book->author}}'>
         @include('modules.field-error',['field'=>'author'])
 
         <label for='published_year'>* Published Year (YYYY)</label>
-        <input type='text' name='published_year' id='published_year' value='{{old('published_year', '2018')}}'>
+        <input type='text' name='published_year' id='published_year' value='{{$book->published_year}}'>
         @include('modules.field-error',['field'=>'published_year'])
 
         <label for='cover_url'>* Cover URL</label>
-        <input type='text' name='cover_url' id='cover_url' value='{{old('cover_url','https://prodimage.images-bn.com/pimages/9781524796280_p0_v2_s550x406.jpg')}}'>
+        <input type='text' name='cover_url' id='cover_url' value='{{$book->cover_url}}'>
         @include('modules.field-error',['field'=>'cover_url'])
 
         <label for=' purchase_url'>* Purchase URL </label>
-        <input type='text' name='purchase_url' id='purchase_url' value='{{old('purchase_url','https://www.barnesandnoble.com/w/fire-blood-george-r-r-martin/1128905006?ean=9781524796280#/')}}'>
+        <input type='text' name='purchase_url' id='purchase_url' value='{{$book->purchase_url}}'>
         @include('modules.field-error',['field'=>'purchase_url'])
 
-        <input type='submit' value='Add book'>
+        <input type='submit' value='Edit this book'>
+
     </form>
-     @if($errors->any())
+    @if($errors->any())
         <ul class="alert alert-danger">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
