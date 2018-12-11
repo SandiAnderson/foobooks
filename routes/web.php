@@ -43,3 +43,6 @@ Route::any('/practice/{n?}', 'PracticeController@index');
 Route::view('/about', 'about');
 Route::view('/contact', 'contact');
 
+
+Auth::routes();
+

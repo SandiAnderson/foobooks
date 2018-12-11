@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Book;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TagsTableSeeder::class);
         $this->call(BooksTableSeeder::class);
         $this->call(BookTagTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
     }
 }
