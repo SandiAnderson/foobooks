@@ -1,11 +1,88 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use IanLChapman\PigLatinTranslator\Parser;
 use App\Book;
+use App\Author;
 
 class PracticeController extends Controller
 {
+    public function practice16()
+    {
+        $books = Book::with('tags')->get();
+
+        foreach ($books as $book) {
+            dump($book->title.' is tagged with: ');
+            foreach ($book->tags as $tag) {
+                dump($tag->name.' ');
+            }
+        }
+
+    }
+
+
+    public function practice15()
+    {
+        $book = Book::where('title', '=', 'The Great Gatsby')->first();
+
+        dump($book->title.' is tagged with: ');
+        foreach ($book->tags as $tag) {
+            dump($tag->name);
+        }
+    }
+
+
+    public function practice14()
+    {
+        #If you're querying for many books, you may want to join in the related author
+        # data with that query.
+        # This can be done via the with method and is referred to as eager loading
+
+        # Eager load the author with the book
+        $books = Book::with('author')->get();
+
+        foreach ($books as $book) {
+            dump($book->author->first_name . ' ' . $book->author->last_name . ' wrote ' . $book->title);
+        }
+
+        dump($books->toArray());
+
+    }
+
+
+    public function practice13()
+    {
+# Get the first book as an example
+        $book = Book::first();
+
+# Get the author from this book using the "author" dynamic property
+# "author" corresponds to the the relationship method defined in the Book model
+        $author = $book->author;
+
+# Output
+        dump($book->title.' was written by '.$author->first_name.' '.$author->last_name);
+        dump($book->toArray());    }
+
+
+    public function practice12()
+    {
+        #Here's an example where we create a book, and then associate that book with an author.
+        $author = Author::where('first_name', '=', 'J.K.')->first();
+
+        $book = new Book;
+        $book->title = "Fantastic Beasts and Where to Find Them";
+        $book->published_year = 2017;
+        $book->cover_url = 'http://prodimage.images-bn.com/pimages/9781338132311_p0_v2_s192x300.jpg';
+        $book->purchase_url = 'http://www.barnesandnoble.com/w/fantastic-beasts-and-where-to-find-them-j-k-rowling/1004478855';
+        $book->author()->associate($author); # <--- Associate the author with this book
+        $book->save();
+        dump($book->toArray());
+
+    }
+
+
     public function practice11()
     {
         $results = Book::where('author', '=', 'J.K. Rowling')->delete();
@@ -106,7 +183,7 @@ class PracticeController extends Controller
         # `books` table, with the above data
         $book->save();
 
-        dump('Added: '.$book->title);
+        dump('Added: ' . $book->title);
     }
 
     /**
@@ -118,6 +195,7 @@ class PracticeController extends Controller
         $translation = $translator->translate('Hello World');
         dump($translation);
     }
+
     /*
      * Demonstrating getting values from configs
      */
@@ -127,6 +205,7 @@ class PracticeController extends Controller
         # Disabling this line to prevent accidentally revealing mail related credentials on the prod. server
         //dump(config('mail'));
     }
+
     /**
      * Demonstrating the first practice example
      */
@@ -134,6 +213,7 @@ class PracticeController extends Controller
     {
         dump('This is the first example.');
     }
+
     /**
      * ANY (GET/POST/PUT/DELETE)
      * /practice/{n?}

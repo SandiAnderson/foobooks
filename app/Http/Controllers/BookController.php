@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Book;
+use App\Author;
+use App\Tag;
 
 class BookController extends Controller
 {
@@ -62,8 +64,14 @@ class BookController extends Controller
      */
     public function create(Request $request)
     {
-        return view('books.create');
-    }
+        $authors = Author::getForDropdown();
+        $tags = Tag::getForCheckboxes();
+
+
+        return view('books.create')->with([
+            'authors' => $authors,
+            'tags' =>$tags,
+        ]);    }
 
 
     /**
@@ -75,7 +83,7 @@ class BookController extends Controller
         # Validate the request data
         $validatedData = $request->validate([
             'title' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
             'published_year' => 'bail|required|digits:4',
             'cover_url' => 'required|url',
             'purchase_url' => 'required|url'
@@ -86,11 +94,13 @@ class BookController extends Controller
 
         $book = new Book();
         $book->title = $request->input('title');
-        $book->author = $request->input('author');
+        $book->author_id = $request->input('author_id');
         $book->published_year = $request->input('published_year');
         $book->cover_url = $request->input('cover_url');
         $book->purchase_url = $request->input('purchase_url');
         $book->save();
+
+        $book->tags()->sync($request->tags);
 
         return redirect('/books/create')->with([
             'alert' => 'Your book was added.'
@@ -98,18 +108,27 @@ class BookController extends Controller
 
     }
 
-    public function edit($id)
+    public function edit($id=null)
     {
-        $book = Book::find($id);
+        $book = Book::with('tags')->find($id);
 
         if (!$book) {
             return redirect('/books')->with([
                 'alert' => 'Book not found.'
             ]);
         }
+        $authors = Author::getForDropdown();
+
+        # Get all the possible tags so we can include them with checkboxes in the view
+        $allTags = Tag::getForCheckboxes();
+
+        $tags = $book->tags()->pluck('tags.id')->toArray();
 
         return view('books.edit')->with([
-            'book' => $book
+            'book' => $book,
+            'authors' =>$authors,
+            'allTags' =>$allTags,
+            'tags' =>$tags,
         ]);
     }
 
@@ -121,15 +140,19 @@ class BookController extends Controller
     {
         $this->validate($request, [
             'title' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
             'published_year' => 'required|digits:4|numeric',
             'cover_url' => 'required|url',
             'purchase_url' => 'required|url',
         ]);
 
+
         $book = Book::find($id);
+
+        $book->tags()->sync($request->tags);
+
         $book->title = $request->input('title');
-        $book->author = $request->input('author');
+        $book->author_id = $request->input('author_id');
         $book->published_year = $request->input('published_year');
         $book->cover_url = $request->input('cover_url');
         $book->purchase_url = $request->input('purchase_url');
@@ -173,6 +196,8 @@ class BookController extends Controller
                 'alert' => 'Book not found.'
             ]);
         }
+
+        $book->tags()->detach();
 
         $book->delete();
 
